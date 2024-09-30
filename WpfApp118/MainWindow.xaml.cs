@@ -31,6 +31,8 @@ namespace WpfApp118
 
         private void MainWindow_OnStylusDown(object sender, StylusDownEventArgs e)
         {
+            _moveEntryCount++;
+            _distinctPoints.AddRange(e.GetStylusPoints(this).Distinct());
             _startTick = Environment.TickCount;
             StylusMove += MainWindow_StylusMove;
         }
@@ -39,10 +41,7 @@ namespace WpfApp118
         {
             _moveEntryCount++;
             _pointsCount += e.GetStylusPoints(this).Count;
-            foreach (var stylusPoint in e.GetStylusPoints(this).Distinct())
-            {
-                _distinctPoints.Add(stylusPoint);
-            }
+            _distinctPoints.AddRange(e.GetStylusPoints(this).Distinct());
         }
 
         private void MainWindow_OnStylusUp(object sender, StylusEventArgs e)
