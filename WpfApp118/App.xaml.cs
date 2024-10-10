@@ -9,6 +9,10 @@ namespace WpfApp118
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            AppContext.SetSwitch("Switch.System.Windows.Input.Stylus.EnablePointerSupport", true);
+        }
     }
 
 }

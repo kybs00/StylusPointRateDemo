@@ -24,7 +24,7 @@ namespace WpfApp118
             InitializeComponent();
         }
 
-        private int _moveEntryCount = 0;
+        private int _stylusEntryCount = 0;
         private int _pointsCount = 0;
         private List<StylusPoint> _distinctPoints = new List<StylusPoint>();
         private int _startTick = 0;
@@ -36,8 +36,8 @@ namespace WpfApp118
         {
             _stylusDown = true;
             _startTick = Environment.TickCount;
-            _moveEntryCount++;
-            var currentPointsCount = e.GetStylusPoints(this).Count;
+            _stylusEntryCount++;
+            var currentPointsCount = e.GetStylusPoints(this).Distinct().Count();
             _pointsCount += currentPointsCount;
             _distinctPoints.AddRange(e.GetStylusPoints(this).Distinct());
         }
@@ -48,8 +48,10 @@ namespace WpfApp118
             {
                 return;
             }
-            _moveEntryCount++;
-            var currentPointsCount = e.GetStylusPoints(this).Count;
+            var stylusPointCollection = e.GetStylusPoints(this);
+            Console.WriteLine($"{DateTime.Now.ToString("HH:mm:ss.fff")}:MainWindow_OnStylusMove {stylusPointCollection.Count}个点");
+            _stylusEntryCount++;
+            var currentPointsCount = e.GetStylusPoints(this).Distinct().Count();
             _minMoveCount = Math.Min(_minMoveCount, currentPointsCount);
             _maxMoveCount = Math.Max(_maxMoveCount, currentPointsCount);
             _pointsCount += currentPointsCount;
@@ -63,11 +65,11 @@ namespace WpfApp118
                 return;
             }
             MessageBox.Show(this, $"一共{_pointsCount}点,非重复{_distinctPoints.Count}点，\r\n" +
-                                  $"输入平均间隔{Math.Round((Environment.TickCount - _startTick) / (double)_moveEntryCount, 2)}ms,\r\n" +
-                                  $"输入单次数量在({_minMoveCount},{_maxMoveCount})区间\r\n" +
+                                  $"输入平均间隔{Math.Round((Environment.TickCount - _startTick) / (double)_stylusEntryCount, 2)}ms,\r\n" +
+                                  $"单次输入包含({_minMoveCount},{_maxMoveCount})个点\r\n" +
                                   $"点平均间隔{Math.Round((Environment.TickCount - _startTick) / (double)_pointsCount, 2)}ms\r\n");
             _pointsCount = 0;
-            _moveEntryCount = 0;
+            _stylusEntryCount = 0;
             _distinctPoints.Clear();
             _stylusDown = false;
         }
